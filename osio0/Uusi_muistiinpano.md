@@ -1,5 +1,5 @@
 
-'''mermaid
+```mermaid
 graph TD;
 
 sequenceDiagram
@@ -10,4 +10,4 @@ sequenceDiagram
     activate server
     browser-->>server: JSON-file note
     deactivate server
-'''
+```
