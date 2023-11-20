@@ -6,7 +6,7 @@ import Notification from './components/Notification'
 import Filter from './components/Filter'
 import personsService from './services/persons'
 import './index.css'
-const baseUrl = 'http://localhost:3001/api/notes'
+const baseUrl = '/api/notes'
 
 const App = () => {
   const [persons, setPersons] = useState([])
