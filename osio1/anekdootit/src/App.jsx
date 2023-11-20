@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
 const App = () => {
   const anecdotes = [
@@ -10,27 +10,27 @@ const App = () => {
     'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
-  ];
+  ]
   
-  const [selected, setSelected] = useState(0);
-  const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0));
+  const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
 
   const handleVote = () => {
-    const newVotes = [...votes];
-    newVotes[selected] += 1;
-    setVotes(newVotes);
-  };
+    const newVotes = [...votes]
+    newVotes[selected] += 1
+    setVotes(newVotes)
+  }
 
   const getRandomAnecdote = () => {
-    const randomInt = Math.floor(Math.random() * anecdotes.length);
+    const randomInt = Math.floor(Math.random() * anecdotes.length)
     setSelected(randomInt);
-  };
+  }
 
   const mostVotes = () => {
     let maxIndex = 0;
     for (let i = 1; i < votes.length; i++) {
       if (votes[i] > votes[maxIndex]) {
-        maxIndex = i;
+        maxIndex = i
       }
     }
     return maxIndex;
@@ -47,7 +47,7 @@ const App = () => {
       <p>{anecdotes[mostVotes()]}{'\n'}<p>
       </p>has {votes[mostVotes()]} votes</p>
     </div>
-  );
-};
+  )
+}
 
 export default App;

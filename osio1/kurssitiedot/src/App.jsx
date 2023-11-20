@@ -1,8 +1,8 @@
 const Header = ({ course }) => {
   return (
     <h1>{course}</h1>
-  );
-};
+  )
+}
 
 const Content = ({ parts }) => {
   return (
@@ -13,16 +13,16 @@ const Content = ({ parts }) => {
         </p>
       ))}
     </div>
-  );
-};
+  )
+}
 
 const Total = ({ parts }) => {
-  const totalExercises = parts.reduce((sum, part) => sum + part.exercises, 0);
+  const totalExercises = parts.reduce((sum, part) => sum + part.exercises, 0)
 
   return (
     <p>Number of exercises {totalExercises}</p>
-  );
-};
+  )
+}
 
 const App = () => {
   const course = {
@@ -37,7 +37,7 @@ const App = () => {
     { 
       name: 'State of a component', exercises: 14 
     }
-  ]};
+  ]}
 
   return (
     <div>
@@ -45,7 +45,7 @@ const App = () => {
       <Content parts={course.parts} />
       <Total parts={course.parts} />
     </div>
-  );
-};
+  )
+}
 
 export default App

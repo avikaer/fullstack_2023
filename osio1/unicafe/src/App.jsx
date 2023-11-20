@@ -1,13 +1,13 @@
 import { useState } from 'react'
 
 const Statistics = (props) => {
-  const { good, neutral, bad } = props;
-  const totalFeedback = good + neutral + bad;
-  const average = (good + bad) / totalFeedback;
-  const positivePercentage = good / totalFeedback * 100;
+  const { good, neutral, bad } = props
+  const totalFeedback = good + neutral + bad
+  const average = (good + bad) / totalFeedback
+  const positivePercentage = good / totalFeedback * 100
   
   if (totalFeedback === 0) {
-    return <p>No feedback given yet.</p>;
+    return <p>No feedback given yet.</p>
   }
 
   return (
@@ -41,14 +41,14 @@ const Statistics = (props) => {
       </tbody>
       </table>
     </div>
-  );
-};
+  )
+}
 
 const Button = (props) => (
   <button onClick={props.handleClick}>
     {props.text}
   </button>
-);
+)
 
 const App = () => {
   const [good, setGood] = useState(0)
