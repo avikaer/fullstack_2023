@@ -6,6 +6,7 @@ import Notification from './components/Notification'
 import Filter from './components/Filter'
 import personsService from './services/persons'
 import './index.css'
+const baseUrl = 'api/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -17,7 +18,7 @@ const App = () => {
   const hook = () => {
     console.log('effect')
     axios
-      .get('http://localhost:3001/persons')
+      .get('baseUrl')
       .then(response => {
         console.log('promise fulfilled')
         setPersons(response.data)
