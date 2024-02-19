@@ -1,31 +1,63 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-if (process.argv.length<3) {
-  console.log('give password as argument')
-  process.exit(1)
+if (process.argv.length < 3) {
+  console.log('Give password as an argument');
+  process.exit(1);
 }
 
-const password = process.argv[2]
+const password = process.argv[2];
 
-const url =
-  `mongodb+srv://palmarier:<password>@cluster0.mgnjuuy.mongodb.net/?retryWrites=true&w=majority`
+const url = `mongodb+srv://palmarier:${password}@cluster0.qz86wh1.mongodb.net/puhelinluettelo?retryWrites=true&w=majority`;
 
-mongoose.set('strictQuery', false)
-mongoose.connect(url)
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true});
 
-const noteSchema = new mongoose.Schema({
-  content: String,
-  important: Boolean,
+const personSchema = new mongoose.Schema({
+  name: String,
+  number: String,
 })
 
-const Note = mongoose.model('Note', noteSchema)
+const Person = mongoose.model('Person', personSchema);
 
-const note = new Note({
-  content: 'HTML is Easy',
-  important: true,
-})
+if (process.argv.length === 3) {
+  // If only password is provided, print all entries
+  Person.find({}).then(result => {
+    console.log('phonebook:');
+    result.forEach(person => {
+      console.log(`${person.name} ${person.number}`);
+    });
+    mongoose.connection.close();
+  });
+} else if (process.argv.length === 5) {
+  // If three parameters are provided, add a new entry
+  const person = new Person({
+    name: process.argv[3],
+    number: process.argv[4],
+  });
 
-note.save().then(result => {
-  console.log('note saved!')
+  person.save().then(result => {
+    console.log(`added ${result.name} number ${result.number} to phonebook`);
+    mongoose.connection.close();
+  });
+} else {
+  console.log('Invalid number of parameters!');
+  mongoose.connection.close();
+}
+
+/*const person = new Person({
+  name: 'uusiHenkilo',
+  number: 123,
+});
+
+person.save().then(result => {
+  console.log('Person saved!');
+  mongoose.connection.close();
+});
+
+Person.find({}).then(result => {
+  result.forEach(person => {
+    console.log(person)
+  })
   mongoose.connection.close()
-})
+})*/
+
+
