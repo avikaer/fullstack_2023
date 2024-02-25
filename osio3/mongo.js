@@ -1,3 +1,4 @@
+require('dotenv').config()
 const mongoose = require('mongoose')
 
 if (process.argv.length<3) {
@@ -5,12 +6,8 @@ if (process.argv.length<3) {
   process.exit(1)
 }
 
-const password = process.argv[2]
+const url = process.env.MONGODB_URI
 
-const url =
-  `mongodb+srv://palmarier:${password}@cluster0.qz86wh1.mongodb.net/puhelinluettelo?retryWrites=true&w=majority`
-
-mongoose.set('strictQuery', false)
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const personSchema = new mongoose.Schema({

@@ -27,6 +27,7 @@ const requestLogger = (request, response, next) => {
 
 app.use(requestLogger)
 
+/*
 let people = [
   {
     id: 1,
@@ -38,7 +39,7 @@ let people = [
     name: "Bertta",
     number: "050-000000"
   },
-]
+]*/
 
 app.get('/', (request, response) => {
   response.send('<h1>Tervetuloa puhelinluetteloon!</h1>')
@@ -66,10 +67,14 @@ app.get('/api/people/:id', (request, response) => {
 app.delete('/api/people/:id', (request, response) => {
     const id = request.params.id;
     Person.findByIdAndRemove(id)
-      .then(() => {
-        response.status(204).end();
-      })
-  });
+    .then(() => {
+      response.status(204).end()
+    })
+    .catch(error => {
+      console.log(error); // Log any potential errors
+      response.status(500).json({ error: 'Internal Server Error' })
+    })
+  })
 
 
 app.post('/api/people', (request, response) => {
@@ -98,14 +103,15 @@ app.get('/info', (request, response) => {
     const formattedMinutes = minutes < 10 ? '0' + minutes : minutes
     const formattedSeconds = seconds < 10 ? '0' + seconds : seconds
   
-    Person.countDocuments({}, (err, count) => {
-        const textResponse = `
+    Person.countDocuments()
+    .then((count) => {
+      const textResponse = `
         Current time: ${hours}:${formattedMinutes}:${formattedSeconds}\n
         Phonebook has info for ${count} people
       `
-        response.send(textResponse)
+      response.send(textResponse);
+    })
   })
-})
 
   const PORT = process.env.PORT
   app.listen(PORT, () => {

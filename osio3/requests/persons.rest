@@ -2,9 +2,10 @@ GET http://localhost:3001/api/people
 ###
 POST http://localhost:3001/api/people
 Content-Type: application/json
+
 {
-  "name": "Java",
+  "name": "Haskell",
   "number": "123-456-7890"
 }
 ###
-DELETE http://localhost:3001/api/people/1
+DELETE http://localhost:3001/api/people/65db884fa99a92feda0a98a7
