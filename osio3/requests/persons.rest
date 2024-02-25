@@ -1,14 +1,10 @@
-### GET Request
-GET http://localhost:3001/api/persons
-
-### POST Request
-POST http://localhost:3001/api/persons
+GET http://localhost:3001/api/people
+###
+POST http://localhost:3001/api/people
 Content-Type: application/json
-
 {
-  "name": "John Doe",
+  "name": "Java",
   "number": "123-456-7890"
 }
-
-### DELETE Request
-DELETE http://localhost:3001/api/persons/1
+###
+DELETE http://localhost:3001/api/people/1
