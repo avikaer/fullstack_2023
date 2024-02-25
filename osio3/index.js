@@ -27,20 +27,6 @@ const requestLogger = (request, response, next) => {
 
 app.use(requestLogger)
 
-/*
-let people = [
-  {
-    id: 1,
-    name: "Aatu",
-    number: "040-000000"
-    },
-  {
-    id: 2,
-    name: "Bertta",
-    number: "050-000000"
-  },
-]*/
-
 app.get('/', (request, response) => {
   response.send('<h1>Tervetuloa puhelinluetteloon!</h1>')
 })
@@ -66,7 +52,7 @@ app.get('/api/people/:id', (request, response) => {
 
 app.delete('/api/people/:id', (request, response) => {
     const id = request.params.id;
-    Person.findByIdAndRemove(id)
+    Person.findByIdAndDelete(id)
     .then(() => {
       response.status(204).end()
     })
