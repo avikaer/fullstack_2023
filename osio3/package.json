@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "rm -rf osio3/dist && cd ../osio2/puhelinluettelo && npm run build && cp -r dist ../../osio3",
+    "deploy:full": "npm run build:ui && cd ../osio3 && git add . && git commit -m uibuild && git push"
   },
   "repository": {
     "type": "git",
