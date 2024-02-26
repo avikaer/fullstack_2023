@@ -8,7 +8,8 @@
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf osio3/dist && cd ../osio2/puhelinluettelo && npm run build && cp -r dist ../../osio3",
-    "deploy:full": "npm run build:ui && cd ../osio3 && git add . && git commit -m uibuild && git push"
+    "deploy:full": "npm run build:ui && cd ../osio3 && git add . && git commit -m uibuild && git push",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,8 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "@stylistic/eslint-plugin-js": "^1.6.2",
+    "eslint": "^8.57.0",
     "nodemon": "^3.1.0"
   }
 }
