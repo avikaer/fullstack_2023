@@ -5,6 +5,9 @@ const cors = require('cors')
 const Person = require('./models/person')
 const app = express()
 
+const { validatePhoneNumber, Person: PersonModel } = require('./models/person');
+
+
 const requestLogger = (request, response, next) => {
     console.log('Method:', request.method)
     console.log('Path:  ', request.path)
@@ -23,7 +26,7 @@ app.use(requestLogger)
 
 
 const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
+  console.error(error)
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
@@ -93,8 +96,8 @@ app.delete('/api/people/:id', (request, response) => {
 app.post('/api/people', (request, response, next) => {
   const body = request.body
 
-  if (!body.name || !body.number) {
-      return response.status(400).json({ error: 'name or number missing' })
+  if (body.name === undefined || body.number === undefined) {
+      return response.status(400).json({ error: 'invalid or missing name or number' })
   } else {
       const person = new Person({
           name: body.name,
@@ -107,7 +110,8 @@ app.post('/api/people', (request, response, next) => {
       })
       .catch(error => {
         if (error.name === 'ValidationError') {
-          return response.status(400).json({ error: error.message })
+          const validationErrors = Object.values(error.errors).map(err => err.message)
+          return response.status(400).json({ error: validationErrors })
         }
   
         console.error('Error adding person:', error)

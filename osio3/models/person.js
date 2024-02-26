@@ -2,6 +2,11 @@ const mongoose = require('mongoose')
 
 const url = process.env.MONGODB_URI
 
+const validatePhoneNumber = (value) => {
+  const phoneNumberRegex = /^(0\d|\+\d{1,2})?(\d{2,3}-\d{5,})$/
+  return phoneNumberRegex.test(value)
+};
+
 console.log('connecting to', url)
 mongoose.connect(url)
 .then(result => {
@@ -10,11 +15,6 @@ mongoose.connect(url)
   .catch((error) => {
     console.log('error connecting to MongoDB:', error.message)
   })
-
-  const validatePhoneNumber = (value) => {
-    const phoneNumberRegex = /^(0\d|\+\d{1,2})?(\d{2,3}-\d+)$/
-    return phoneNumberRegex.test(value);
-  }
 
 const personSchema = new mongoose.Schema({
     name: {
@@ -27,7 +27,7 @@ const personSchema = new mongoose.Schema({
       required: true,
       validate:{
         validator: validatePhoneNumber,
-        message: 'invalid phonenumber format'
+        message: 'invalid phonenumber format',
       }
     },
   })
