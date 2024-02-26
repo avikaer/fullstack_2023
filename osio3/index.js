@@ -3,19 +3,7 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person')
-
 const app = express()
-app.use(express.json())
-app.use(cors())
-app.use(morgan('tiny'))
-app.use(express.static('dist'))
-
-//morgan.token('postData', (request, response) => 
-//JSON.stringify(request.body))
-
-//app.use(morgan(':method :url :status :response-time ms - :postData'))
-app.use(morgan(':method :url :status :response-time ms - :req[content-type] :res[content-length]'));
-
 
 const requestLogger = (request, response, next) => {
     console.log('Method:', request.method)
@@ -25,7 +13,30 @@ const requestLogger = (request, response, next) => {
     next()
   }
 
+app.use(cors())
+app.use(morgan('tiny'))
+app.use(morgan(':method :url :status :response-time ms - :req[content-type] :res[content-length]'))
+
+app.use(express.static('dist'))
+app.use(express.json())
 app.use(requestLogger)
+
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }  else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message 
+    })
+  }
+  next(error)
+}
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
 
 app.get('/', (request, response) => {
   response.send('<h1>Tervetuloa puhelinluetteloon!</h1>')
@@ -39,46 +50,74 @@ app.get('/api/people', (request, response) => {
 })
 
 app.get('/api/people/:id', (request, response) => {
-    const id = request.params.id;
+    const id = request.params.id
     Person.findById(id)
       .then(person => {
         if (person) {
-          response.json(person);
+          response.json(person)
         } else {
-          response.status(404).json({ error: 'person not found' });
+          response.status(404).end
         }
       })
-  });
+      .catch(error => next(error))
+})
+
+  app.put('/api/people/:id', (request, response, next) => {
+    const body = request.body
+  
+    const person = {
+      name: body.name,
+      number: body.number,
+    }
+  
+    Person.findByIdAndUpdate(request.params.id, person, { new: true })
+      .then(updatedPerson => {
+        response.json(updatedPerson)
+      })
+      .catch(error => next(error))
+  })
 
 app.delete('/api/people/:id', (request, response) => {
-    const id = request.params.id;
+    const id = request.params.id
     Person.findByIdAndDelete(id)
     .then(() => {
       response.status(204).end()
     })
     .catch(error => {
-      console.log(error); // Log any potential errors
+      console.log(error)
       response.status(500).json({ error: 'Internal Server Error' })
     })
   })
 
 
-app.post('/api/people', (request, response) => {
-    const body = request.body;
-  
-    if (!body.name || !body.number) {
-      return response.status(400).json({ error: 'name or number missing' });
-    }
-    const person = new Person({
-        name: body.name,
-        number: body.number
+app.post('/api/people', (request, response, next) => {
+  const body = request.body
+
+  if (!body.name || !body.number) {
+      return response.status(400).json({ error: 'name or number missing' })
+  } else {
+      const person = new Person({
+          name: body.name,
+          number: body.number
       })
-    
-    person.save()
-    .then(savedPerson => {
-    response.json(savedPerson)
-    })
-  })
+      
+      person.save()
+      .then(savedPerson => {
+        response.json(savedPerson)
+      })
+      .catch(error => {
+        if (error.name === 'ValidationError') {
+          return response.status(400).json({ error: error.message })
+        }
+  
+        console.error('Error adding person:', error)
+        response.status(500).json({ error: 'Internal Server Error' })
+      })
+    }
+})
+  
+
+
 
 app.get('/info', (request, response) => {
     const currentTime = new Date()
@@ -90,16 +129,19 @@ app.get('/info', (request, response) => {
     const formattedSeconds = seconds < 10 ? '0' + seconds : seconds
   
     Person.countDocuments()
-    .then((count) => {
-      const textResponse = `
-        Current time: ${hours}:${formattedMinutes}:${formattedSeconds}\n
-        Phonebook has info for ${count} people
-      `
-      response.send(textResponse);
+      .then((count) => {
+        const textResponse = `
+          Current time: ${hours}:${formattedMinutes}:${formattedSeconds}\n
+          Phonebook has info for ${count} people
+        `
+        response.send(textResponse)
     })
   })
+  
+app.use(unknownEndpoint)
+app.use(errorHandler)
 
-  const PORT = process.env.PORT
-  app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+const PORT = process.env.PORT
+app.listen(PORT, () => {
+console.log(`Server running on port ${PORT}`)
 })
