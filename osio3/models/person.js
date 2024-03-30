@@ -1,45 +1,45 @@
+require('dotenv').config()
 const mongoose = require('mongoose')
+const process = require('process')
+
+
+if (process.argv.length<3) {
+	console.log('give password as argument')
+	process.exit(1)
+}
 
 const url = process.env.MONGODB_URI
 
-const validatePhoneNumber = (value) => {
-  const phoneNumberRegex = /^(0\d|\+\d{1,2})?(\d{2,3}-\d{5,})$/
-  return phoneNumberRegex.test(value)
-};
-
-console.log('connecting to', url)
-mongoose.connect(url)
-.then(result => {
-    console.log('connected to MongoDB')
-  })
-  .catch((error) => {
-    console.log('error connecting to MongoDB:', error.message)
-  })
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const personSchema = new mongoose.Schema({
-    name: {
-      type: String,
-      minlength: 3,
-      required: true
-    },
-    number: {
-      type: String,
-      required: true,
-      validate:{
-        validator: validatePhoneNumber,
-        message: 'invalid phonenumber format',
-      }
-    },
-  })
-  
-personSchema.set('toJSON', {
-    transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id
-    delete returnedObject.__v
-    }
+	name: String,
+	number: String,
 })
 
-const Person = mongoose.model('Person', personSchema)  
+const Person = mongoose.model('Person', personSchema)
 
-module.exports = Person
+if (process.argv.length === 3) {
+
+	Person.find({}).then((result) => {
+		console.log('phonebook:')
+		result.forEach((person) => {
+			console.log(`${person.name} ${person.number}`)
+		})
+		mongoose.connection.close()
+	})
+} else if (process.argv.length === 5) {
+
+	const person = new Person({
+		name: process.argv[3],
+		number: process.argv[4],
+	})
+
+	person.save().then(() => {
+		console.log(`added ${person.name} number ${person.number} to phonebook`)
+		mongoose.connection.close()
+	})
+} else {
+	console.log('invalid number of arguments')
+	process.exit(1)
+}

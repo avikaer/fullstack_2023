@@ -1,11 +1,11 @@
-require('dotenv').config()
+const app = require('./app') // varsinainen Express-sovellus
+const config = require('./utils/config')
+const logger = require('./utils/logger')
+
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person')
-const app = express()
-const process = require('process')
-
 
 const requestLogger = (request, response, next) => {
 	console.log('Method:', request.method)
@@ -141,7 +141,6 @@ app.get('/info', (request, response) => {
 app.use(unknownEndpoint)
 app.use(errorHandler)
 
-const PORT = process.env.PORT
-app.listen(PORT, () => {
-	console.log(`Server running on port ${PORT}`)
+app.listen(config.PORT, () => {
+	logger.info(`Server running on port ${config.PORT}`)
 })

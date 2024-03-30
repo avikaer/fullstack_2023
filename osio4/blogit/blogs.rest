@@ -1,0 +1,22 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+    {
+        "title": "Koirablogi",
+        "author": "Koira",
+        "url": "koira.fi",
+        "likes": "1000"
+    }
+
+###
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+    {
+        "title": "Kahviblogi",
+        "author": "Kahvi-ihminen",
+        "url": "kahvi.fi",
+        "likes": "2"
+    }
+
+
