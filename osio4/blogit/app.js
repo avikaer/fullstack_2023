@@ -25,7 +25,6 @@ const connectDatabase = async () => {
 }
 
 connectDatabase()
-
 const blogRouter = express.Router()
 
 blogRouter.get('/api/blogs', async (request, response, next) => {
@@ -50,6 +49,19 @@ app.post('/api/blogs', async (request, response, next) => {
 app.use((error, request, response, next) => {
   console.error(error)
   response.status(500).json({ error: 'Internal server error' })
+})
+
+app.delete('/api/blogs/:id', async (request, response) => {
+  try {
+      const blogId = request.params.id;
+      const deletedBlog = await Blog.findByIdAndDelete(blogId) // Changed from findByIdAndRemove
+      if (!deletedBlog) {
+          return response.status(404).json({ error: 'Blog not found' })
+      }
+      response.status(204).json({ message: 'Blog deleted successfully' })  } catch (error) {
+      console.error(error);
+      response.status(500).json({ error: 'Error' })
+  }
 })
 
 const PORT = process.env.PORT || 3000

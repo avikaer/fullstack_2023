@@ -11,3 +11,16 @@ Content-Type: application/json
     "url": "https://example.com/my-first-blog-post",
     "likes": 10
 }
+
+###
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+    "title": "My Second Blog",
+    "author": "John Doe",
+    "url": "https://example.com/my-second-blog"
+}
+
+###
+DELETE http://localhost:3001/api/blogs/660b024603a02ec53fe6d89e
